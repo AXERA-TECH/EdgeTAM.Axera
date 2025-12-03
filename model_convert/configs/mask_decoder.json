@@ -1,0 +1,130 @@
+{
+  // input model file path. type: string. required: true.
+  "input": "./onnx_models/edgetam_mask_decoder.onnx",
+  // axmodel output directory. type: string. required: true.
+  "output_dir": "./output_edgetam_mask_decoder",
+  // rename output axmodel. type: string. required: false. default: compiled.axmodel.
+  "output_name": "edgetam_mask_decoder.axmodel",
+  // input model type. type: enum. required: false. default: ONNX. option: ONNX, QuantAxModel, QuantONNX.
+  "model_type": "ONNX",
+  // target hardware. type: enum. required: false. default: AX650. option: AX650, AX620E, M76H, M57.
+  "target_hardware": "AX650",
+  // npu mode. while ${target_hardware} is AX650, npu mode can be NPU1 / NPU2 / NPU3. while ${target_hardware} is AX620E, npu mode can be NPU1 / NPU2. type: enum. required: false. default: NPU1.
+  "npu_mode": "NPU3",
+  "onnx_opt": {
+    // disable onnx optimization. type: bool. required: false. default: false.
+    "disable_onnx_optimization": false,
+    // enable onnx simplify by https://github.com/daquexian/onnx-simplifier. type: bool. required: false. default: false.
+    "enable_onnxsim": true,
+    // enable model check. type: bool. required: false. default: false.
+    "model_check": false,
+    // disable transformation check. type: bool. required: false. default: false.
+    "disable_transformation_check": false,
+    // save tensors data to optimize memory footprint. type: bool. required: false. default: false.
+    "save_tensors_data": false
+  },
+  "quant": {
+    "input_configs": [
+      {
+        // input tensor name in origin model. "DEFAULT" means input config for all input tensors. type: string. required: true.
+        "tensor_name": "image_embeddings",
+        // quantize calibration dataset archive file path. type: string. required: true. limitation: tar, tar.gz, zip.
+        "calibration_dataset": "./data/image_embeddings.tar",
+        // quantize calibration data format. type: enum. required: false. default: Image. option: Image, Numpy, Binary, NumpyObject.
+        "calibration_format": "Numpy",
+        // quantize calibration data size is min(${calibration_size}, size of ${calibration_dataset}), "-1" means load all dataset. type: int. required: false. default: 32.
+        "calibration_size": -1
+      },
+      {
+        // input tensor name in origin model. "DEFAULT" means input config for all input tensors. type: string. required: true.
+        "tensor_name": "sparse_prompt_embeddings",
+        // quantize calibration dataset archive file path. type: string. required: true. limitation: tar, tar.gz, zip.
+        "calibration_dataset": "./data/sparse_prompt_embeddings.tar",
+        // quantize calibration data format. type: enum. required: false. default: Image. option: Image, Numpy, Binary, NumpyObject.
+        "calibration_format": "Numpy",
+        // quantize calibration data size is min(${calibration_size}, size of ${calibration_dataset}), "-1" means load all dataset. type: int. required: false. default: 32.
+        "calibration_size": -1
+      },
+      {
+        // input tensor name in origin model. "DEFAULT" means input config for all input tensors. type: string. required: true.
+        "tensor_name": "dense_prompt_embeddings",
+        // quantize calibration dataset archive file path. type: string. required: true. limitation: tar, tar.gz, zip.
+        "calibration_dataset": "./data/dense_prompt_embeddings.tar",
+        // quantize calibration data format. type: enum. required: false. default: Image. option: Image, Numpy, Binary, NumpyObject.
+        "calibration_format": "Numpy",
+        // quantize calibration data size is min(${calibration_size}, size of ${calibration_dataset}), "-1" means load all dataset. type: int. required: false. default: 32.
+        "calibration_size": -1
+      },
+      {
+        // input tensor name in origin model. "DEFAULT" means input config for all input tensors. type: string. required: true.
+        "tensor_name": "high_res_feat_0",
+        // quantize calibration dataset archive file path. type: string. required: true. limitation: tar, tar.gz, zip.
+        "calibration_dataset": "./data/high_res_feat_0.tar",
+        // quantize calibration data format. type: enum. required: false. default: Image. option: Image, Numpy, Binary, NumpyObject.
+        "calibration_format": "Numpy",
+        // quantize calibration data size is min(${calibration_size}, size of ${calibration_dataset}), "-1" means load all dataset. type: int. required: false. default: 32.
+        "calibration_size": -1
+      },
+      {
+        // input tensor name in origin model. "DEFAULT" means input config for all input tensors. type: string. required: true.
+        "tensor_name": "high_res_feat_1",
+        // quantize calibration dataset archive file path. type: string. required: true. limitation: tar, tar.gz, zip.
+        "calibration_dataset": "./data/high_res_feat_1.tar",
+        // quantize calibration data format. type: enum. required: false. default: Image. option: Image, Numpy, Binary, NumpyObject.
+        "calibration_format": "Numpy",
+        // quantize calibration data size is min(${calibration_size}, size of ${calibration_dataset}), "-1" means load all dataset. type: int. required: false. default: 32.
+        "calibration_size": -1
+      }
+    ],
+    "layer_configs": [
+      {
+        "start_tensor_names": ["DEFAULT"],
+        "end_tensor_names": ["DEFAULT"],
+        // quantize data type. type: enum. required: false. default: U8. option: U8, S8, U16, S16, FP32.
+        "data_type": "U16"
+      },
+      // {
+      //   // set layer quantize precision by layers name. type: enum. required: must choose between `layer_name` and `op_type` and `layer_names` and `op_types`. default: [].
+      //   "layer_names": ["Mul_337"],
+      //   // quantize data type. type: enum. required: false. default: U8. option: U8, S8, U16, S16, FP32.
+      //   "data_type": "FP32",
+      //   // quantize data type for Conv. type: enum. required: false. default: U8. option: U8, S8, U16, S16, FP32.
+      //   "output_data_type": "FP32",
+      //   // quantize weight type for Conv. type: enum. required: false. default: S8. option: S8, FP32.
+      //   "weight_data_type": "FP32"
+      // }
+
+    ],
+    // quantize calibration method. type: enum. required: false. default: MinMax. option: MinMax, Percentile, MSE, KL.
+    "calibration_method": "MinMax",
+    // enable quantization precision analysis. type: bool. required: false. default: false.
+    "precision_analysis": true,
+    // precision analysis method. type: enum. required: false. default: PerLayer. option: PerLayer, EndToEnd.
+    "precision_analysis_method": "EndToEnd",
+    // precision analysis mode. type: enum. required: false. default: Reference. option: Reference, NPUBackend.
+    "precision_analysis_mode": "NPUBackend",
+    // enalbe smooth quant strategy. type: bool. required: false. default: false.
+    "enable_smooth_quant": true,
+    "transformer_opt_level": 1,
+    "conv_bias_data_type": "FP32",
+    "refine_weight_threshold": 1e-6
+  },
+  //  "output_processors": [
+  //   {
+  //     "tensor_name": "onnx::Reshape_474",
+  //     "dst_perm": [0, 2, 3, 1]
+  //   },
+  //   {
+  //     "tensor_name": "onnx::Reshape_495",
+  //     "dst_perm": [0, 2, 3, 1]
+  //   },
+  //   {
+  //     "tensor_name": "onnx::Reshape_516",
+  //     "dst_perm": [0, 2, 3, 1]
+  //   }
+  // ],
+  
+  "compiler": {
+      "check": 0
+  }
+}
