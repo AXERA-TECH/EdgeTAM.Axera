@@ -19,7 +19,7 @@
 将本文件夹下的```prompt_encoder.py```替换```EdgeTAM/sam2/modeling
 /sam/prompt_encoder.py```，以支持导出能够用于NPU量化编译的ONNX格式模型。
 
-1. 安装相关python依赖
+2. 安装相关python依赖
 
   ```bash
   pip install -r requirements.txt
